@@ -5,7 +5,7 @@ const Card = ({ card, handleClick }) => {
     <div className={card.className}>
       <div className="card-back card-face" onClick={handleClick}></div>
       <div className="card-front card-face">
-        <svg height={50}>
+        <svg className="card-icon">
           <use href={`${sprite}#icon-${card.value}`} />
         </svg>
       </div>
