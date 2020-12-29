@@ -39,3 +39,16 @@ export const setMatched = (cards, card1, card2) =>
 
 export const resetCards = cards =>
   cards.map(card => ({ ...card, className: 'card' }));
+
+export const addResult = (results, result) => {
+  const res = results
+    .concat(result)
+    .sort((a, b) => a - b)
+    .slice(0, 10);
+  try {
+    localStorage.setItem('results', JSON.stringify(res));
+  } catch (e) {
+    console.log(e);
+  }
+  return res;
+};

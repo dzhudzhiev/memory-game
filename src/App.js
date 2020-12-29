@@ -7,9 +7,10 @@ import {
   setVisible,
   setNotVisible,
   setMatched,
-  resetCards
-} from './utils';
-import data from './data';
+  resetCards,
+  addResult
+} from './utils/utils';
+import data from './data/data';
 
 function App() {
   const [cards, setCards] = useState(data);
@@ -17,6 +18,7 @@ function App() {
   const [cardToCheck, setCardToCheck] = useState(null);
   const [matchedCards, setMatchedCards] = useState([]);
   const [busy, setBusy] = useState(false);
+  const [results, setResults] = useState([]);
 
   const [timerId, setTimerId] = useState(null);
   const [timeOutId, setTimeOutId] = useState(null);
@@ -81,6 +83,7 @@ function App() {
     openModal();
     setCards(resetCards(cards));
     setMatchedCards([]);
+    setResults(addResult(results, timer));
   };
 
   const openModal = () => {
@@ -93,19 +96,33 @@ function App() {
 
   useEffect(() => {
     if (matchedCards.length === cards.length) finishGame();
+    // eslint-disable-next-line
   }, [matchedCards]);
 
   useEffect(() => {
+    try {
+      const fromLocalStorage = JSON.parse(localStorage.getItem('results'));
+      if (fromLocalStorage) setResults(fromLocalStorage);
+    } catch (e) {
+      console.log(e);
+    }
     return () => {
       clearInterval(timerId);
       clearTimeout(timeOutId);
     };
+    // eslint-disable-next-line
   }, []);
 
   return (
     <div className="app">
-      <h1 className="page-title">Memory Game</h1>
-      <Modal isOpen={isOpenModal} startGame={startGame} modalView={modalView} />
+      <Modal
+        isOpen={isOpenModal}
+        startGame={startGame}
+        modalView={modalView}
+        setModalView={setModalView}
+        results={results}
+        timer={timer}
+      />
       <Board cards={cards} timer={timer} flipCard={flipCard} />
     </div>
   );
